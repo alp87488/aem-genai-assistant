@@ -230,7 +230,7 @@ describe('getSessionDate', () => {
     const session = { timestamp: KNOWN_TIMESTAMP, name: 'My Template 1/1/1970 12:00 AM' };
     const date = getSessionDate(session);
     expect(date).not.toBeNull();
-    expect(isNaN(date.getTime())).toBe(false);
+    expect(Number.isNaN(date.getTime())).toBe(false);
   });
 
   it('falls back to name-parse and returns a valid Date when timestamp is absent', () => {
@@ -240,7 +240,7 @@ describe('getSessionDate', () => {
     const session = { name: `My Template ${enUsDateStr} ${enUsTimeStr}` };
     const date = getSessionDate(session);
     expect(date).toBeInstanceOf(Date);
-    expect(isNaN(date.getTime())).toBe(false);
+    expect(Number.isNaN(date.getTime())).toBe(false);
   });
 
   it('returns null when timestamp is absent and name cannot be parsed as a date', () => {

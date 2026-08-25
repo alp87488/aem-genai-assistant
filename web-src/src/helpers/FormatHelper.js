@@ -13,7 +13,7 @@ export function getSessionDate(session) {
   const date = session.timestamp
     ? new Date(session.timestamp)
     : new Date((session.name ?? '').split(' ').slice(-3).join(' '));
-  return isNaN(date.getTime()) ? null : date;
+  return Number.isNaN(date.getTime()) ? null : date;
 }
 
 export function formatTimestamp(timestamp) {

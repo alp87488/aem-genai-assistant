@@ -21,6 +21,7 @@ import { useIntl } from 'react-intl';
 import { intlMessages as appIntlMessages } from './App.l10n.js';
 import { intlMessages as promptSessionSideViewIntlMessages } from './PromptSessionSideView.l10n.js';
 import { intlMessages } from './MainSidePanel.l10n.js';
+import { getLocalizedTemplateInfo } from './PromptTemplateCard.l10n.js';
 
 import PromptsIcon from '../assets/prompts.svg';
 import FavoritesIcon from '../assets/favorites.svg';
@@ -205,11 +206,20 @@ export function MainSidePanel(props) {
               && sessions.toReversed().map((session) => {
                 const sessionDate = getSessionDate(session);
                 const groupingLabel = groupingLabelGenerator(sessionDate ?? new Date(0));
+                const rawLabel = session.name.split(' ').slice(0, -3).join(' ');
+                const { label: sessionLabel } = getLocalizedTemplateInfo(
+                  session.templateKey,
+                  rawLabel,
+                  null,
+                  formatMessage,
+                );
                 const formattedDate = sessionDate
                   ? sessionDate.toLocaleString(user.locale, {
                     month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric',
                   })
                   : '';
+                const isClickedSession = currentSession && viewType === ViewType.CurrentSession
+                  && session && session.id === currentSession.id;
                 return (
                       <>
                         {groupingLabel
@@ -218,10 +228,10 @@ export function MainSidePanel(props) {
                               UNSAFE_className={style.subMenuHeader}>
                               {formatMessage(intlMessages.mainSidePanel[groupingLabel])}
                             </Text>}
-                        <li className={currentSession && viewType === ViewType.CurrentSession && session && session.id === currentSession.id ? derivedStyles.clickedSubMenuItem : style.subMenuItem}
+                        <li className={isClickedSession ? derivedStyles.clickedSubMenuItem : style.subMenuItem}
                             key={session.id}>
                           <Link href="#" UNSAFE_className={style.menuItemLink}
-                                onPress={() => handleRecent(session)}>{`${session.name.split(' ')[0]} ${formattedDate}`.trim()}</Link>
+                                onPress={() => handleRecent(session)}>{`${sessionLabel} ${formattedDate}`.trim()}</Link>
                         </li>
                       </>
                 );
